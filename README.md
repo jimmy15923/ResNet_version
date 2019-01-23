@@ -28,13 +28,13 @@ Hyper-parameter setting ares
 - same augmentation
 - epochs=100
 
-Keras application ResNet-50-V1
+**Keras application ResNet-50-V1**
 ![keras](v0_bn_32_result.png)
 
-Our own graph ResNet-50-V1
+**Our own graph ResNet-50-V1**
 ![v1](v1_bn_32_result.png)
 
-Our own graph ResNet-50-V2
+**Our own graph ResNet-50-V2**
 ![v2](v2_bn_32_result.png)
 
 ### We compare the performance with differenet normalization (BN/GN/SN) of same model.
@@ -46,11 +46,11 @@ Hyper-parameter setting ares
 - same augmentation
 - epochs=100
 
-Batch Normalization
+**Batch Normalization**
 ![BN](v2_bn_32_result.png)
 
-Group Normalization
+**Group Normalization**
 ![GN](v2_gn_32_result.png)
 
-Switch Normalization
+**Switch Normalization**
 ![SN](v2_sn_32_result.png)
