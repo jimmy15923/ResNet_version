@@ -25,10 +25,10 @@ We compare the same training strategy with different version of ResNet-50. Hyper
 
 Keras application ResNet-50-V1
 
-[keras](v0_bn_32_result.png)
+![keras](v0_bn_32_result.png)
 
 ResNet-50-V1
-[v1](v1_bn_32_result.png)
+![v1](v1_bn_32_result.png)
 
 ResNet-50-V2
-[v2](v2_bn_32_result.png)
+![v2](v2_bn_32_result.png)
