@@ -6,9 +6,29 @@ ResNet graph is written in tf.keras, running experiments by
 
 ```
 python train_resnet.py --keras=v1 --batch_size=32 --norm=bn --name=test
-```
+
 --keras: Speicy the version to use. keras / v1 / v2
 --batch_size: Batch size
 --epochs: Number of epochs
 --norm: Which normalization to use. bn / gn / sn
 --name: Name of the learning curve plot
+```
+
+---
+## Results
+
+We compare the same training strategy with different version of ResNet-50. Hyper-parameter setting ares
+- batch_size=32
+- optimizer=Adam(lr=1e-4)
+- same augmentation
+- epochs=100
+
+Keras application ResNet-50-V1
+
+[keras](v0_bn_32_result.png)
+
+ResNet-50-V1
+[v1](v1_bn_32_result.png)
+
+ResNet-50-V2
+[v2](v2_bn_32_result.png)
