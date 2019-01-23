@@ -1,7 +1,8 @@
 # ResNet_version
 
-This repo is to compare the performance of ResNet-50-V1 and ResNet-50-V2 on Kaggle Cat/Dog Classification. Data is located on 
-DGX-staion: /home/jimmy15923/benchmarks/cat_dog/sample
+This repo is to compare the performance of ResNet-50-V1 and ResNet-50-V2 on Kaggle Cat/Dog Classification. 
+
+Data is located on DGX-staion: /home/jimmy15923/benchmarks/cat_dog/sample
 
 ResNet graph is written in tf.keras, running experiments by
 
