@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(
-    description='Mask R-CNN for nuclei counting and segmentation')
+    description='ResNet version of V1/V2 and different normalization')
 
 parser.add_argument('--keras', required=False, default=True)
 parser.add_argument('--name', required=False, default=True)
