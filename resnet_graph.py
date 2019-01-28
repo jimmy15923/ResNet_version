@@ -2,22 +2,20 @@ import os
 import warnings
 
 import tensorflow as tf
-import tensorflow.python.keras.backend as K
-import tensorflow.python.keras.layers as KL
-import tensorflow.python.keras.engine as KE
-import tensorflow.python.keras.models as KM
-from keras_contrib import backend as KC
+from tensorflow.python.keras import backend as K
+from tensorflow.python.keras import layers as KL
+from tensorflow.python.keras import engine as KE
+from tensorflow.python.keras import models as KM
 from tensorflow.python.keras import backend
-
 from tensorflow.python.keras.engine import Layer, InputSpec
 from tensorflow.python.keras import initializers, regularizers, constraints
-from tensorflow.python.keras import backend as K
 from tensorflow.python.keras.utils.generic_utils import get_custom_objects
+
+from keras_contrib import backend as KC
 
 # Requires TensorFlow 1.3+ and Keras 2.0.8+.
 from distutils.version import LooseVersion
 assert LooseVersion(tf.__version__) >= LooseVersion("1.3")
-assert LooseVersion(keras.__version__) >= LooseVersion('2.0.8')
 
 class BatchNorm(KL.BatchNormalization):
     """Extends the Keras BatchNormalization class to allow a central place
