@@ -7,6 +7,7 @@ from tensorflow.python.keras.callbacks import ModelCheckpoint
 from tensorflow.python.keras.applications.resnet50 import preprocess_input, ResNet50
 
 import tensorflow as tf
+import pandas as pd
 
 config = tf.ConfigProto(allow_soft_placement=True)
 config.gpu_options.per_process_gpu_memory_fraction = 0.3  #占用30%显存
@@ -25,6 +26,7 @@ parser.add_argument('--name', required=False, default=True)
 parser.add_argument('--batch_size', required=True, default=32, type=int)
 parser.add_argument('--norm', required=True, default="bn")
 parser.add_argument('--epochs', required=False, default=100, type=int)
+parser.add_argument("--opitmizer", required=False, default="adam")
 args = parser.parse_args()
 
 use_keras = args.keras
@@ -71,7 +73,7 @@ valid_batches = valid_datagen.flow_from_directory(DATASET_PATH + '/valid',
                                                   interpolation='bicubic',
                                                   class_mode='categorical',
                                                   shuffle=False,
-                                                  batch_size=BATCH_SIZE)
+                                                  batch_size=BATCH_SIZE*4)
 
 # 輸出各類別的索引值
 for cls, idx in train_batches.class_indices.items():
@@ -79,8 +81,8 @@ for cls, idx in train_batches.class_indices.items():
 
 # 以訓練好的 ResNet50 為基礎來建立模型，
 
-if use_keras == "keras":
-    print("USING Keras Resnet-50")
+if use_keras == "v0":
+    print("Keras.application.ResNet: V1")
     # 捨棄 ResNet50 頂層的 fully connected layers
     net = ResNet50(include_top=False, weights=None, input_tensor=None,
                    input_shape=(IMAGE_SIZE[0],IMAGE_SIZE[1],3))
@@ -90,14 +92,17 @@ if use_keras == "keras":
     # 增加 Dense layer，以 softmax 產生個類別的機率值
     output_layer = Dense(NUM_CLASSES, activation='softmax', name='softmax')(x)
 
-    net_final = Model(inputs=net.input, outputs=output_layer)
-    
-    # 使用 Adam optimizer，以較低的 learning rate 進行 fine-tuning
-    net_final.compile(optimizer=Adam(lr=1e-4),
-                      loss='categorical_crossentropy', metrics=['accuracy'])
+    if optimizer == "adam":
+        print("Optimizer: Adam")
+        net_final.compile(optimizer=Adam(lr=1e-4),
+                          loss='categorical_crossentropy', metrics=['accuracy'])
+    else:
+        print("Optimizer: SGD")
+        net_final.compile(optimizer=keras.optimizers.SGD(
+            lr=1e-4, momentum=0.9, nesterov=True), loss='categorical_crossentropy', metrics=['accuracy'])
 
 elif use_keras == "v1":
-    print("USING OWN Keras")
+    print("ResNet: V1")
     from resnet_graph import *
     input_image = KL.Input(shape=[224, 224, 3], name="input_image")
     _, C2, C3, C4, C5 = resnet_graph(input_image, 'resnet50', stage5=True, norm_use=args.norm)
@@ -107,24 +112,35 @@ elif use_keras == "v1":
 
     net_final = KM.Model(inputs=input_image, outputs=output)
 
-    net_final.compile(optimizer=Adam(lr=1e-4),
-                      loss='categorical_crossentropy', metrics=['accuracy'])
-    
-#     net_final.compile(optimizer=keras.optimizers.SGD(
-#             lr=0.0003125, momentum=0.9, clipnorm=5), loss='categorical_crossentropy', metrics=['accuracy'])
-  
+    if optimizer == "adam":
+        print("Optimizer: Adam")
+        net_final.compile(optimizer=Adam(lr=1e-4),
+                          loss='categorical_crossentropy', metrics=['accuracy'])
+    else:
+        print("Optimizer: SGD")
+        net_final.compile(optimizer=keras.optimizers.SGD(
+            lr=1e-4, momentum=0.9, nesterov=True), loss='categorical_crossentropy', metrics=['accuracy'])
+
 else:
-    print("USING V2")
+    print("ResNet: V2")
     from resnetv2_graph import *
-    
+
     pretrain_modules = ResNet50V2(include_top=False, input_shape=(224,224,3), norm_use=args.norm, weights=None)
     gap = tf.keras.layers.GlobalAveragePooling2D()(pretrain_modules.output)
     logit = tf.keras.layers.Dense(units=2, name="logit")(gap)
     out = tf.keras.layers.Activation("softmax", name="output")(logit)
-    
+
     net_final = tf.keras.Model(inputs=[pretrain_modules.input], outputs=[out])
-    net_final.compile(loss="categorical_crossentropy", optimizer=tf.keras.optimizers.Adam(lr=1e-4), metrics=['accuracy'])
     
+    if optimizer == "adam":
+        print("Optimizer: Adam")
+        net_final.compile(optimizer=Adam(lr=1e-4),
+                          loss='categorical_crossentropy', metrics=['accuracy'])
+    else:
+        print("Optimizer: SGD")
+        net_final.compile(optimizer=keras.optimizers.SGD(
+            lr=1e-4, momentum=0.9, nesterov=True), loss='categorical_crossentropy', metrics=['accuracy'])
+
 # 輸出整個網路結構
 print(net_final.summary())
 
@@ -132,26 +148,10 @@ print(net_final.summary())
 history = net_final.fit_generator(train_batches,
                         steps_per_epoch = train_batches.samples // BATCH_SIZE,
                         validation_data = valid_batches,
-                        validation_steps = valid_batches.samples // (BATCH_SIZE*2),
+                        validation_steps = valid_batches.samples // (BATCH_SIZE*4),
                         epochs = NUM_EPOCHS,
                         use_multiprocessing=True,
-                        workers=8)
+                        workers=4)
 
-plt.subplot(121)
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-
-plt.subplot(122)
-# summarize history for loss
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('model loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.title("{}".format(args.name.upper()))
-plt.savefig("{}_result.png".format(args.name), dpi=500)
+df = pd.DataFrame(history.history)
+df.to_csv("logs/{}.csv".format(args.name), index=False)
