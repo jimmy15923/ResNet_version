@@ -1009,7 +1009,7 @@ def normalize_layer(tensor, name, norm_use='bn'):
         Output tensor for the block.
     """
     if norm_use == "gn":
-        x = GroupNorm(name=name+'gn', groups=16)(tensor)
+        x = GroupNorm(name=name+'gn')(tensor)
     elif norm_use == "bn":
         x = tf.keras.layers.BatchNormalization(axis=-1, name=name+'bn', epsilon=1.001e-5)(tensor)
     else:
