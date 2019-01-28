@@ -38,20 +38,18 @@ Hyper-parameter setting ares
 **Our own graph ResNet-50-V2**
 ![v2](v2_bn_32_result.png)
 
-### We compare the performance with differenet normalization (BN/GN/SN) of same model.
+### We compare the performance with differenet normalization (BN/GN/SN) of same model on SGD/ADAM optimizer.
 The result shows that loss of SN is lower than other normalization but more bumpy.
 
 Hyper-parameter setting ares
 - batch_size=32
-- optimizer=Adam(lr=1e-4)
+- optimizer=Adam(lr=1e-4) / SGD(lr=1e-4, momentum=0.9, nestrov=True)
 - same augmentation
 - epochs=100
 
-**Batch Normalization**
-![BN](v2_bn_32_result.png)
+ADAM Optimizer for BN/GN/SG
+![ADAM](logs/norm_32_adam_1e-4.png)
 
-**Group Normalization**
-![GN](v2_gn_32_result.png)
+SGD Optimizer for BN/GN/SG
+![SGD](logs/norm_32_sgd_1e-4.png)
 
-**Switch Normalization**
-![SN](v2_sn_32_result.png)
