@@ -6,15 +6,10 @@ from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.callbacks import ModelCheckpoint
 from tensorflow.python.keras.applications.resnet50 import preprocess_input, ResNet50
 
+import argparse
+import os
 import tensorflow as tf
 import pandas as pd
-
-config = tf.ConfigProto(allow_soft_placement=True)
-config.gpu_options.per_process_gpu_memory_fraction = 0.3  #占用30%显存
-sess = tf.Session(config=config)
-
-
-import argparse
 import matplotlib.pyplot as plt
 
 # Parse command line arguments
@@ -27,7 +22,18 @@ parser.add_argument('--batch_size', required=True, default=32, type=int)
 parser.add_argument('--norm', required=True, default="bn")
 parser.add_argument('--epochs', required=False, default=100, type=int)
 parser.add_argument("--optimizer", required=False, default="adam")
+parser.add_argument("--gpu_id", required=False, default="1")
+parser.add_argument("--gpu_fraction", required=False, default=0.3, type=float)
 args = parser.parse_args()
+
+
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
+
+config = tf.ConfigProto(allow_soft_placement=True)
+config.gpu_options.per_process_gpu_memory_fraction = args.gpu_fraction  #占用30%显存
+sess = tf.Session(config=config)
+
 
 use_keras = args.keras
 
