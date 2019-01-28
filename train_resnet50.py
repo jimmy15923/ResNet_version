@@ -1,7 +1,7 @@
 from tensorflow.python.keras import backend as K
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Flatten, Dense, Dropout, GlobalAveragePooling2D
-from tensorflow.python.keras.optimizers import Adam
+from tensorflow.python.keras.optimizers import Adam, SGD
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.callbacks import ModelCheckpoint
 from tensorflow.python.keras.applications.resnet50 import preprocess_input, ResNet50
@@ -98,7 +98,7 @@ if use_keras == "v0":
                           loss='categorical_crossentropy', metrics=['accuracy'])
     else:
         print("Optimizer: SGD")
-        net_final.compile(optimizer=keras.optimizers.SGD(
+        net_final.compile(optimizer=SGD(
             lr=1e-4, momentum=0.9, nesterov=True), loss='categorical_crossentropy', metrics=['accuracy'])
 
 elif use_keras == "v1":
@@ -118,7 +118,7 @@ elif use_keras == "v1":
                           loss='categorical_crossentropy', metrics=['accuracy'])
     else:
         print("Optimizer: SGD")
-        net_final.compile(optimizer=keras.optimizers.SGD(
+        net_final.compile(optimizer=SGD(
             lr=1e-4, momentum=0.9, nesterov=True), loss='categorical_crossentropy', metrics=['accuracy'])
 
 else:
@@ -138,7 +138,7 @@ else:
                           loss='categorical_crossentropy', metrics=['accuracy'])
     else:
         print("Optimizer: SGD")
-        net_final.compile(optimizer=keras.optimizers.SGD(
+        net_final.compile(optimizer=SGD(
             lr=1e-4, momentum=0.9, nesterov=True), loss='categorical_crossentropy', metrics=['accuracy'])
 
 # 輸出整個網路結構
