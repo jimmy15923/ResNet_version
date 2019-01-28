@@ -151,7 +151,30 @@ history = net_final.fit_generator(train_batches,
                         validation_steps = valid_batches.samples // (BATCH_SIZE*4),
                         epochs = NUM_EPOCHS,
                         use_multiprocessing=True,
+<<<<<<< HEAD
                         workers=4)
 
 df = pd.DataFrame(history.history)
 df.to_csv("logs/{}.csv".format(args.name), index=False)
+=======
+                        workers=8)
+
+plt.subplot(121)
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+
+plt.subplot(122)
+# summarize history for loss
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.title("{}".format(args.name.upper()))
+plt.savefig("{}_result.png".format(args.name), dpi=500)
+>>>>>>> 52d4719285c8df5b6028a331ff3253bda29bb2d9
