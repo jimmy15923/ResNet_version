@@ -91,7 +91,8 @@ if use_keras == "v0":
 
     # 增加 Dense layer，以 softmax 產生個類別的機率值
     output_layer = Dense(NUM_CLASSES, activation='softmax', name='softmax')(x)
-
+    net_final = Model(inputs=net.input, outputs=output_layer)
+    
     if args.optimizer == "adam":
         print("Optimizer: Adam")
         net_final.compile(optimizer=Adam(lr=1e-4),
