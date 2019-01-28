@@ -92,7 +92,7 @@ if use_keras == "v0":
     # 增加 Dense layer，以 softmax 產生個類別的機率值
     output_layer = Dense(NUM_CLASSES, activation='softmax', name='softmax')(x)
 
-    if optimizer == "adam":
+    if args.optimizer == "adam":
         print("Optimizer: Adam")
         net_final.compile(optimizer=Adam(lr=1e-4),
                           loss='categorical_crossentropy', metrics=['accuracy'])
@@ -112,7 +112,7 @@ elif use_keras == "v1":
 
     net_final = KM.Model(inputs=input_image, outputs=output)
 
-    if optimizer == "adam":
+    if args.optimizer == "adam":
         print("Optimizer: Adam")
         net_final.compile(optimizer=Adam(lr=1e-4),
                           loss='categorical_crossentropy', metrics=['accuracy'])
@@ -132,7 +132,7 @@ else:
 
     net_final = tf.keras.Model(inputs=[pretrain_modules.input], outputs=[out])
     
-    if optimizer == "adam":
+    if args.optimizer == "adam":
         print("Optimizer: Adam")
         net_final.compile(optimizer=Adam(lr=1e-4),
                           loss='categorical_crossentropy', metrics=['accuracy'])
