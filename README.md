@@ -47,9 +47,9 @@ Hyper-parameter setting ares
 - same augmentation
 - epochs=100
 
-ADAM Optimizer for BN/GN/SG
+**ADAM Optimizer for BN/GN/SG**
 ![ADAM](logs/norm_32_adam_1e-4.png)
 
-SGD Optimizer for BN/GN/SG
+**SGD Optimizer for BN/GN/SG**
 ![SGD](logs/norm_32_sgd_1e-4.png)
 
