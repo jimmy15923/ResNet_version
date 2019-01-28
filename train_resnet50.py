@@ -26,7 +26,7 @@ parser.add_argument('--name', required=False, default=True)
 parser.add_argument('--batch_size', required=True, default=32, type=int)
 parser.add_argument('--norm', required=True, default="bn")
 parser.add_argument('--epochs', required=False, default=100, type=int)
-parser.add_argument("--opitmizer", required=False, default="adam")
+parser.add_argument("--optimizer", required=False, default="adam")
 args = parser.parse_args()
 
 use_keras = args.keras
