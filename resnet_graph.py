@@ -623,7 +623,7 @@ def resnet_graph(input_image, architecture, stage5=True, norm_use="sn", train_bn
     assert architecture in ["resnet50", "resnet101"]
     # Stage 1
     x = KL.ZeroPadding2D((3, 3))(input_image)
-    x = layers.Conv2D(64, (7, 7),
+    x = KL.Conv2D(64, (7, 7),
                       strides=(2, 2),
                       padding='valid',
                       kernel_initializer='he_normal',
