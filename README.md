@@ -4,16 +4,19 @@ This repo is to compare the performance of ResNet-50-V1 and ResNet-50-V2 on Kagg
 
 Data is located on DGX-staion: /home/jimmy15923/benchmarks/cat_dog/sample
 
-ResNet graph is written in tf.keras, running experiments by
+ResNet graph is written in tf.keras. Run your experiments by
 
 ```
-python train_resnet.py --keras=v1 --batch_size=32 --norm=bn --name=test
+python train_resnet.py --keras=v1 --batch_size=32 --norm=bn --name=test --gpu_id=1
 
 --keras: Speicy the version to use. keras / v1 / v2
 --batch_size: Batch size
 --epochs: Number of epochs
 --norm: Which normalization to use. bn / gn / sn
---name: Name of the learning curve plot
+--name: Name of the history.csv to save in logs/
+--gpu_id: Which GPU
+--gpu_fraction: GPU memory fraction
+--optimizer: Adam or SGD. default=Adam
 ```
 
 ---
