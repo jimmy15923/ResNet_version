@@ -29,14 +29,9 @@ Hyper-parameter setting ares
 - same augmentation
 - epochs=100
 
-**Keras application ResNet-50-V1**
-![keras](v0_bn_32_result.png)
+**Adam Optimizer**
+![version_compare](logs/version_32_adam_1e-4.png)
 
-**Our own graph ResNet-50-V1**
-![v1](v1_bn_32_result.png)
-
-**Our own graph ResNet-50-V2**
-![v2](v2_bn_32_result.png)
 
 ### We compare the performance with differenet normalization (BN/GN/SN) of same model on SGD/ADAM optimizer.
 The result shows that loss of SN is lower than other normalization but more bumpy.
