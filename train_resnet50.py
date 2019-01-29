@@ -26,7 +26,6 @@ parser.add_argument("--gpu_id", required=False, default="1")
 parser.add_argument("--gpu_fraction", required=False, default=0.3, type=float)
 args = parser.parse_args()
 
-
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
 
@@ -106,7 +105,7 @@ if use_keras == "v0":
     else:
         print("Optimizer: SGD")
         net_final.compile(optimizer=SGD(
-            lr=1e-4, momentum=0.9, nesterov=True), loss='categorical_crossentropy', metrics=['accuracy'])
+            lr=0.01, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
 
 elif use_keras == "v1":
     print("ResNet: V1")
@@ -126,7 +125,7 @@ elif use_keras == "v1":
     else:
         print("Optimizer: SGD")
         net_final.compile(optimizer=SGD(
-            lr=1e-4, momentum=0.9, nesterov=True), loss='categorical_crossentropy', metrics=['accuracy'])
+            lr=0.01, momentum=0.9, nesterov=True), loss='categorical_crossentropy', metrics=['accuracy'])
 
 else:
     print("ResNet: V2")
@@ -146,19 +145,45 @@ else:
     else:
         print("Optimizer: SGD")
         net_final.compile(optimizer=SGD(
-            lr=1e-4, momentum=0.9, nesterov=True), loss='categorical_crossentropy', metrics=['accuracy'])
+            lr=0.01, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
 
 # 輸出整個網路結構
 print(net_final.summary())
 
-# 訓練模型
-history = net_final.fit_generator(train_batches,
-                        steps_per_epoch = train_batches.samples // BATCH_SIZE,
-                        validation_data = valid_batches,
-                        validation_steps = valid_batches.samples // (BATCH_SIZE*4),
-                        epochs = NUM_EPOCHS,
-                        use_multiprocessing=True,
-                        workers=4)
+from tensorflow.python.keras.callbacks import LearningRateScheduler
+ 
+# learning rate schedule
+def step_decay(epoch):
+    lr = 0.01
+    
+    if (epoch > 30) & (epoch < 60):
+        return lr /10
+    elif (epoch > 60):
+        return lr /100
+    else:
+        return lr
+    
+if args.optimizer == "adam":
+    # 訓練模型
+    history = net_final.fit_generator(train_batches,
+                            steps_per_epoch = train_batches.samples // BATCH_SIZE,
+                            validation_data = valid_batches,
+                            validation_steps = valid_batches.samples // (BATCH_SIZE*4),
+                            epochs = NUM_EPOCHS,
+                            use_multiprocessing=True,
+                            workers=4)
+else:
+     # 訓練模型
+    lrate = LearningRateScheduler(step_decay, verbose=1)
+    callbacks_list = lrate
+    history = net_final.fit_generator(train_batches,
+                            steps_per_epoch = train_batches.samples // BATCH_SIZE,
+                            validation_data = valid_batches,
+                            validation_steps = valid_batches.samples // (BATCH_SIZE*4),
+                            epochs = NUM_EPOCHS,
+                            use_multiprocessing=True,
+                            workers=4,
+                            callbacks=[callbacks_list]) 
 
 df = pd.DataFrame(history.history)
 df.to_csv("logs/{}.csv".format(args.name), index=False)
