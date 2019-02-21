@@ -9,7 +9,7 @@ ResNet graph is written in tf.keras. Run your experiments by
 ```
 python train_resnet.py --keras=v1 --batch_size=32 --norm=bn --name=test --gpu_id=1
 
---keras: Speicy the version to use. keras / v1 / v2
+--keras: ResNet version to use. keras / v1 / v2
 --batch_size: Batch size
 --epochs: Number of epochs
 --norm: Which normalization to use. bn / gn / sn
